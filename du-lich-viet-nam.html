@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>6 Địa Điểm Du Lịch Nổi Tiếng Việt Nam</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: radial-gradient(120% 120% at 50% 0%, #f8fafc 0%, #e2e8f0 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Be Vietnam Pro", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      background: var(--bg);
+      color: #0f172a;
+      overflow: hidden;
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100dvh;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(1.2rem, 4vw, 2.6rem);
+      padding: clamp(1.6rem, 6vw, 4rem);
+      transition: opacity 700ms ease, transform 700ms ease;
+    }
+
+    .slide.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(1.01);
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+    }
+
+    header {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+    }
+
+    .kicker {
+      text-transform: uppercase;
+      letter-spacing: .8em;
+      font-size: clamp(.8rem, 1vw, .9rem);
+      opacity: .5;
+    }
+
+    .title {
+      font-weight: 800;
+      font-size: clamp(2.8rem, 8vw, 7rem);
+    }
+
+    .subtitle {
+      opacity: .7;
+      font-size: clamp(1rem, 1.6vw, 1.4rem);
+    }
+
+    .map {
+      position: relative;
+      width: min(90vw, 1400px);
+      height: min(70vh, 820px);
+      border-radius: clamp(1rem, 3vw, 2rem);
+      overflow: hidden;
+      box-shadow: 0 80px 120px -80px rgba(15, 23, 42, .4);
+      border: 1px solid rgba(148, 163, 184, .4);
+    }
+
+    .map-bg {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at top, rgba(255, 255, 255, .9), rgba(226, 232, 240, .9)),
+        url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=2000&q=80");
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.1);
+    }
+
+    .map-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, transparent 40%, rgba(15, 23, 42, .18) 100%);
+    }
+
+    .pin {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .4rem;
+      transform: translate(-50%, -100%);
+      cursor: pointer;
+      transition: transform 400ms ease, filter 400ms ease;
+    }
+
+    .pin:hover {
+      transform: translate(-50%, -104%) scale(1.08);
+      filter: drop-shadow(0 30px 60px rgba(15, 23, 42, .25));
+    }
+
+    .pin.active {
+      transform: translate(-50%, -108%) scale(1.12);
+    }
+
+    .pin-dot {
+      width: clamp(14px, 1.6vw, 18px);
+      height: clamp(14px, 1.6vw, 18px);
+      border-radius: 50%;
+      background: radial-gradient(circle, #22d3ee 0%, #2563eb 100%);
+      box-shadow: 0 0 0 clamp(10px, 1.6vw, 14px) rgba(37, 99, 235, .12);
+      position: relative;
+    }
+
+    .pin-dot::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      width: 2px;
+      height: clamp(14px, 2vw, 22px);
+      transform: translateX(-50%);
+      background: linear-gradient(to bottom, rgba(37, 99, 235, .9), transparent);
+    }
+
+    .pin-label {
+      padding: .4rem .9rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, .85);
+      color: #f8fafc;
+      font-size: clamp(.8rem, 1vw, .95rem);
+      white-space: nowrap;
+      box-shadow: 0 20px 40px -20px rgba(15, 23, 42, .9);
+    }
+
+    .pin.ha-long {
+      left: 68%;
+      top: 38%;
+    }
+
+    .pin.ha-giang {
+      left: 46%;
+      top: 26%;
+    }
+
+    .pin.hue {
+      left: 52%;
+      top: 58%;
+    }
+
+    .pin.hoi-an {
+      left: 48%;
+      top: 66%;
+    }
+
+    .pin.nha-trang {
+      left: 58%;
+      top: 78%;
+    }
+
+    .pin.phan-thiet {
+      left: 56%;
+      top: 84%;
+    }
+
+    .detail {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: clamp(1.6rem, 6vw, 4rem);
+    }
+
+    .detail.active {
+      display: flex;
+      animation: detailIn 700ms ease;
+    }
+
+    @keyframes detailIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .detail-backdrop {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      filter: brightness(.7);
+    }
+
+    .detail-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(15, 23, 42, .4) 0%, rgba(15, 23, 42, .9) 100%);
+    }
+
+    .detail-content {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(2rem, 6vw, 4rem);
+      align-items: center;
+      max-width: 1200px;
+    }
+
+    .detail-text {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      color: #f8fafc;
+    }
+
+    .detail-kicker {
+      text-transform: uppercase;
+      letter-spacing: .8em;
+      opacity: .6;
+    }
+
+    .detail-title {
+      font-family: "Be Vietnam Pro", sans-serif;
+      font-weight: 800;
+      font-size: clamp(3rem, 8vw, 7rem);
+    }
+
+    .detail-body {
+      font-size: clamp(1rem, 1.6vw, 1.4rem);
+      line-height: 1.9;
+      opacity: .9;
+      max-width: 560px;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: .8rem;
+      margin-top: 1rem;
+    }
+
+    .detail-list-item {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      opacity: .8;
+    }
+
+    .detail-list-item::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #22d3ee, #2563eb);
+      box-shadow: 0 0 0 10px rgba(34, 211, 238, .12);
+    }
+
+    .detail-image {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: clamp(1rem, 3vw, 1.6rem);
+      background-size: cover;
+      background-position: center;
+      box-shadow: 0 120px 160px -120px rgba(14, 165, 233, .4);
+      border: 1px solid rgba(248, 250, 252, .4);
+    }
+
+    .back {
+      position: absolute;
+      top: clamp(1.6rem, 4vw, 3rem);
+      left: clamp(1.6rem, 4vw, 3rem);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .6rem 1.2rem;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 250, 252, .4);
+      background: rgba(15, 23, 42, .5);
+      color: #f8fafc;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+    }
+
+    .hint {
+      text-align: center;
+      opacity: .6;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="deck">
+    <section class="slide active" id="home">
+      <header>
+        <p class="kicker">DU LỊCH VIỆT NAM</p>
+        <h1 class="title">6 ĐỊA ĐIỂM NỔI TIẾNG</h1>
+        <p class="subtitle">Hãy ấn vào từng dấu chấm trên bản đồ để khám phá từng địa điểm</p>
+      </header>
+      <div class="map">
+        <div class="map-bg"></div>
+        <div class="map-overlay"></div>
+        <button class="pin ha-long" data-target="ha-long">
+          <span class="pin-dot"></span>
+          <span class="pin-label">Vịnh Hạ Long</span>
+        </button>
+        <button class="pin ha-giang" data-target="ha-giang">
+          <span class="pin-dot"></span>
+          <span class="pin-label">Hà Giang</span>
+        </button>
+        <button class="pin hue" data-target="hue">
+          <span class="pin-dot"></span>
+          <span class="pin-label">Huế</span>
+        </button>
+        <button class="pin hoi-an" data-target="hoi-an">
+          <span class="pin-dot"></span>
+          <span class="pin-label">Hội An</span>
+        </button>
+        <button class="pin nha-trang" data-target="nha-trang">
+          <span class="pin-dot"></span>
+          <span class="pin-label">Nha Trang</span>
+        </button>
+        <button class="pin phan-thiet" data-target="phan-thiet">
+          <span class="pin-dot"></span>
+          <span class="pin-label">Phan Thiết - Mũi Né</span>
+        </button>
+      </div>
+      <p class="hint">Ấn vào từng địa điểm để xem chi tiết • Animation mượt mà khi chuyển trang</p>
+    </section>
+
+    <section class="detail" id="ha-long">
+      <div class="detail-backdrop" style="background-image: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=2000&q=80');"></div>
+      <div class="detail-overlay"></div>
+      <button class="back" data-back>
+        <span>←</span>
+        <span>Quay lại bản đồ</span>
+      </button>
+      <div class="detail-content">
+        <div class="detail-text">
+          <p class="detail-kicker">QUẢNG NINH</p>
+          <h2 class="detail-title">Vịnh Hạ Long</h2>
+          <p class="detail-body">Di sản thiên nhiên thế giới được UNESCO công nhận với hơn 1.600 hòn đảo đá vôi tạo nên khung cảnh kỳ vĩ giữa biển xanh. Nổi tiếng với hang động, thuyền du ngoạn và hoàng hôn trên vịnh.</p>
+          <div class="detail-list">
+            <div class="detail-list-item">Thời điểm đẹp nhất: Tháng 3 - Tháng 9</div>
+            <div class="detail-list-item">Trải nghiệm: Du thuyền, kayak, khám phá hang Sửng Sốt</div>
+            <div class="detail-list-item">Đặc sản: Chả mực Hạ Long, hàu nướng</div>
+          </div>
+        </div>
+        <div class="detail-image" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80');"></div>
+      </div>
+    </section>
+
+    <section class="detail" id="ha-giang">
+      <div class="detail-backdrop" style="background-image: url('https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=2000&q=80');"></div>
+      <div class="detail-overlay"></div>
+      <button class="back" data-back>
+        <span>←</span>
+        <span>Quay lại bản đồ</span>
+      </button>
+      <div class="detail-content">
+        <div class="detail-text">
+          <p class="detail-kicker">HÀ GIANG</p>
+          <h2 class="detail-title">Cao nguyên đá Đồng Văn</h2>
+          <p class="detail-body">Vùng đất của núi đá tai mèo, ruộng bậc thang, hoa tam giác mạch nở rộ mỗi mùa đông. Con đường Hạnh Phúc và đèo Mã Pí Lèng là những cung đường đẹp nhất Việt Nam.</p>
+          <div class="detail-list">
+            <div class="detail-list-item">Thời điểm đẹp nhất: Tháng 10 - Tháng 12</div>
+            <div class="detail-list-item">Trải nghiệm: Xe máy vòng cao nguyên, chợ phiên vùng cao</div>
+            <div class="detail-list-item">Đặc sản: Thắng cố, bánh cuốn ngô</div>
+          </div>
+        </div>
+        <div class="detail-image" style="background-image: url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=80');"></div>
+      </div>
+    </section>
+
+    <section class="detail" id="hue">
+      <div class="detail-backdrop" style="background-image: url('https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=2000&q=80');"></div>
+      <div class="detail-overlay"></div>
+      <button class="back" data-back>
+        <span>←</span>
+        <span>Quay lại bản đồ</span>
+      </button>
+      <div class="detail-content">
+        <div class="detail-text">
+          <p class="detail-kicker">THỪA THIÊN HUẾ</p>
+          <h2 class="detail-title">Cố đô Huế</h2>
+          <p class="detail-body">Kinh đô của triều Nguyễn với quần thể Di tích Cố đô Huế được UNESCO công nhận. Hoàng thành, lăng tẩm, chùa Thiên Mụ và ca Huế trên sông Hương mang đậm dấu ấn lịch sử.</p>
+          <div class="detail-list">
+            <div class="detail-list-item">Thời điểm đẹp nhất: Tháng 1 - Tháng 4</div>
+            <div class="detail-list-item">Trải nghiệm: Tham quan Đại Nội, ngồi thuyền trên sông Hương</div>
+            <div class="detail-list-item">Đặc sản: Bún bò Huế, bánh bèo, bánh nậm</div>
+          </div>
+        </div>
+        <div class="detail-image" style="background-image: url('https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?auto=format&fit=crop&w=1600&q=80');"></div>
+      </div>
+    </section>
+
+    <section class="detail" id="hoi-an">
+      <div class="detail-backdrop" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=80');"></div>
+      <div class="detail-overlay"></div>
+      <button class="back" data-back>
+        <span>←</span>
+        <span>Quay lại bản đồ</span>
+      </button>
+      <div class="detail-content">
+        <div class="detail-text">
+          <p class="detail-kicker">QUẢNG NAM</p>
+          <h2 class="detail-title">Phố cổ Hội An</h2>
+          <p class="detail-body">Thành phố cổ đậm chất thương cảng với đèn lồng rực rỡ, nhà cổ, cầu Nhật Bản và những con phố yên bình. Hội An giữ gìn bản sắc độc đáo qua nhiều thế kỷ giao thương.</p>
+          <div class="detail-list">
+            <div class="detail-list-item">Thời điểm đẹp nhất: Tháng 2 - Tháng 8</div>
+            <div class="detail-list-item">Trải nghiệm: Thả đèn hoa đăng, may áo dài, dạo phố cổ</div>
+            <div class="detail-list-item">Đặc sản: Cao lầu, mì Quảng, bánh mì Hội An</div>
+          </div>
+        </div>
+        <div class="detail-image" style="background-image: url('https://images.unsplash.com/photo-1522199873717-bc67b1a5e32b?auto=format&fit=crop&w=1600&q=80');"></div>
+      </div>
+    </section>
+
+    <section class="detail" id="nha-trang">
+      <div class="detail-backdrop" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=2000&q=80');"></div>
+      <div class="detail-overlay"></div>
+      <button class="back" data-back>
+        <span>←</span>
+        <span>Quay lại bản đồ</span>
+      </button>
+      <div class="detail-content">
+        <div class="detail-text">
+          <p class="detail-kicker">KHÁNH HÒA</p>
+          <h2 class="detail-title">Nha Trang</h2>
+          <p class="detail-body">Thành phố biển xinh đẹp với bãi cát trắng, nước trong xanh và nhiều đảo đẹp. Nha Trang là thiên đường của lặn biển, vui chơi giải trí và ẩm thực hải sản tươi ngon.</p>
+          <div class="detail-list">
+            <div class="detail-list-item">Thời điểm đẹp nhất: Tháng 1 - Tháng 8</div>
+            <div class="detail-list-item">Trải nghiệm: Lặn ngắm san hô, tắm bùn khoáng, đảo Hòn Mun</div>
+            <div class="detail-list-item">Đặc sản: Bún chả cá, nem nướng Nha Trang</div>
+          </div>
+        </div>
+        <div class="detail-image" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80');"></div>
+      </div>
+    </section>
+
+    <section class="detail" id="phan-thiet">
+      <div class="detail-backdrop" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2000&q=80');"></div>
+      <div class="detail-overlay"></div>
+      <button class="back" data-back>
+        <span>←</span>
+        <span>Quay lại bản đồ</span>
+      </button>
+      <div class="detail-content">
+        <div class="detail-text">
+          <p class="detail-kicker">BÌNH THUẬN</p>
+          <h2 class="detail-title">Phan Thiết - Mũi Né</h2>
+          <p class="detail-body">Nổi tiếng với đồi cát bay, đồi cát hồng, làng chài và những resort ven biển. Mũi Né là thiên đường của môn thể thao lướt ván diều và hoàng hôn đẹp nhất Việt Nam.</p>
+          <div class="detail-list">
+            <div class="detail-list-item">Thời điểm đẹp nhất: Tháng 11 - Tháng 4</div>
+            <div class="detail-list-item">Trải nghiệm: Đồi cát bay, suối tiên, chợ đêm Mũi Né</div>
+            <div class="detail-list-item">Đặc sản: Bánh xèo Mũi Né, hải sản tươi sống</div>
+          </div>
+        </div>
+        <div class="detail-image" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80');"></div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const home = document.getElementById('home');
+    const pins = document.querySelectorAll('.pin');
+    const details = document.querySelectorAll('.detail');
+    const backs = document.querySelectorAll('[data-back]');
+
+    pins.forEach(pin => {
+      pin.addEventListener('click', () => {
+        const target = pin.dataset.target;
+        home.classList.add('hidden');
+        document.getElementById(target).classList.add('active');
+        pins.forEach(p => p.classList.remove('active'));
+        pin.classList.add('active');
+      });
+    });
+
+    backs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        details.forEach(d => d.classList.remove('active'));
+        home.classList.remove('hidden');
+        pins.forEach(p => p.classList.remove('active'));
+      });
+    });
+  </script>
+</body>
+
+</html>
