@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vũ Trụ - Khám Phá 10 Trang</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: #f8fafc;
+      overflow: hidden;
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .stars::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 40px 70px, #fff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 90px 40px, #fff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 130px 80px, #fff, rgba(0, 0, 0, 0)),
+        radial-gradient(2px 2px at 160px 30px, #fff, rgba(0, 0, 0, 0));
+      background-repeat: repeat;
+      background-size: 200px 100px;
+      animation: moveStars 200s linear infinite;
+      opacity: .8;
+    }
+
+    @keyframes moveStars {
+      from {
+        transform: translateY(0)
+      }
+
+      to {
+        transform: translateY(-100px)
+      }
+    }
+
+    .nebula {
+      position: fixed;
+      width: 40vmax;
+      height: 40vmax;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: .18;
+      pointer-events: none;
+    }
+
+    .nebula.one {
+      top: -20vmax;
+      left: -10vmax;
+      background: radial-gradient(circle, #a78bfa, transparent);
+    }
+
+    .nebula.two {
+      bottom: -25vmax;
+      right: -15vmax;
+      background: radial-gradient(circle, #22d3ee, transparent);
+    }
+
+    .deck {
+      position: relative;
+      width: 100vw;
+      height: 100dvh;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: clamp(2rem, 6vw, 6rem);
+      gap: 1.5rem;
+    }
+
+    .slide.active {
+      display: flex;
+      animation: fadeIn 900ms ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: scale(1.02);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .kicker {
+      font-size: clamp(.9rem, 1.2vw, 1.1rem);
+      letter-spacing: .8em;
+      text-transform: uppercase;
+      opacity: .6;
+    }
+
+    .title {
+      font-family: "Exo 2", sans-serif;
+      font-weight: 800;
+      font-size: clamp(3rem, 10vw, 10rem);
+      line-height: .9;
+      background: linear-gradient(90deg, #a5b4fc 0%, #22d3ee 50%, #f472b6 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .subtitle {
+      font-size: clamp(1rem, 2vw, 2rem);
+      opacity: .8;
+      max-width: 900px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(1rem, 2vw, 1.8rem);
+      max-width: 1300px;
+      margin-top: clamp(2rem, 6vw, 5rem);
+    }
+
+    .card {
+      background: rgba(165, 180, 252, .08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(165, 180, 252, .28);
+      border-radius: 18px;
+      padding: clamp(1.6rem, 3vw, 2.4rem);
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+    }
+
+    .card h3 {
+      font-family: "Exo 2", sans-serif;
+      font-size: clamp(1.4rem, 2vw, 1.8rem);
+    }
+
+    .card p {
+      opacity: .8;
+      line-height: 1.9;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(2rem, 6vw, 4rem);
+      max-width: 1200px;
+      margin-top: clamp(2rem, 6vw, 5rem);
+      text-align: left;
+    }
+
+    .solar {
+      position: relative;
+      width: min(68vmin, 640px);
+      height: min(68vmin, 640px);
+      margin-top: clamp(2rem, 6vw, 4rem);
+    }
+
+    .sun {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 90px;
+      height: 90px;
+      margin: -45px 0 0 -45px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff3b0 0%, #f59e0b 60%, #f97316 100%);
+      box-shadow: 0 0 80px 20px rgba(245, 158, 11, .25);
+    }
+
+    .orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border-radius: 50%;
+      border: 1px solid rgba(148, 163, 184, .25);
+      transform: translate(-50%, -50%);
+      animation: spin linear infinite;
+    }
+
+    .orbit.mercury {
+      width: 150px;
+      height: 150px;
+      animation-duration: 8s;
+    }
+
+    .orbit.venus {
+      width: 210px;
+      height: 210px;
+      animation-duration: 12s;
+    }
+
+    .orbit.earth {
+      width: 280px;
+      height: 280px;
+      animation-duration: 16s;
+    }
+
+    .orbit.mars {
+      width: 350px;
+      height: 350px;
+      animation-duration: 22s;
+    }
+
+    .orbit.jupiter {
+      width: 440px;
+      height: 440px;
+      animation-duration: 32s;
+    }
+
+    .orbit.saturn {
+      width: 520px;
+      height: 520px;
+      animation-duration: 38s;
+    }
+
+    .orbit.uranus {
+      width: 590px;
+      height: 590px;
+      animation-duration: 48s;
+    }
+
+    .orbit.neptune {
+      width: 660px;
+      height: 660px;
+      animation-duration: 60s;
+    }
+
+    .planet {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin-left: -10px;
+      border-radius: 50%;
+    }
+
+    .planet.mercury {
+      background: radial-gradient(circle, #d7ccc2, #a1887f);
+    }
+
+    .planet.venus {
+      background: radial-gradient(circle, #f5d16e, #f59e0b);
+    }
+
+    .planet.earth {
+      background: radial-gradient(circle, #60a5fa, #2563eb);
+    }
+
+    .planet.mars {
+      background: radial-gradient(circle, #f87171, #dc2626);
+    }
+
+    .planet.jupiter {
+      width: 36px;
+      height: 36px;
+      margin-left: -18px;
+      top: -18px;
+      background: radial-gradient(circle, #fcd34d, #b45309);
+    }
+
+    .planet.saturn {
+      width: 32px;
+      height: 32px;
+      margin-left: -16px;
+      top: -16px;
+      background: radial-gradient(circle, #fde68a, #d97706);
+    }
+
+    .planet.saturn::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 46px;
+      height: 10px;
+      margin: -5px 0 0 -23px;
+      border-radius: 50%;
+      border: 2px solid rgba(253, 230, 138, .6);
+      transform: rotate(-20deg);
+    }
+
+    .planet.uranus {
+      background: radial-gradient(circle, #67e8f9, #0e7490);
+    }
+
+    .planet.neptune {
+      background: radial-gradient(circle, #93c5fd, #1d4ed8);
+    }
+
+    @keyframes spin {
+      from {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    .nav {
+      position: fixed;
+      left: 50%;
+      bottom: clamp(1rem, 4vw, 2.4rem);
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: .6rem 1.4rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, .7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(165, 180, 252, .3);
+      font-size: .9rem;
+    }
+
+    .nav button {
+      border: none;
+      background: transparent;
+      color: #f8fafc;
+      opacity: .7;
+      cursor: pointer;
+    }
+
+    .nav button.active {
+      opacity: 1;
+    }
+
+    .counter {
+      opacity: .6;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stars"></div>
+  <div class="nebula one"></div>
+  <div class="nebula two"></div>
+  <div class="deck">
+    <section class="slide active">
+      <p class="kicker">HÀNH TRÌNH KHÁM PHÁ</p>
+      <h1 class="title">VŨ TRỤ</h1>
+      <p class="subtitle">Từ Vụ Nổ Lớn đến những bí ẩn ngoài tầm với</p>
+    </section>
+    <section class="slide">
+      <p class="kicker">KHỞI NGUỒN</p>
+      <h2 class="title" style="font-size: clamp(3rem, 8vw, 8rem);">Vụ Nổ Lớn</h2>
+      <div class="split">
+        <article class="card">
+          <h3>Khoảnh khắc bắt đầu</h3>
+          <p>Khoảng 13,8 tỷ năm trước, toàn bộ vật chất, năng lượng, không gian và thời gian tập trung tại một điểm vô cùng nhỏ, nóng và đặc, sau đó giãn nở cực nhanh.</p>
+        </article>
+        <article class="card">
+          <h3>Bằng chứng quan trọng</h3>
+          <p>Bức xạ nền vi sóng vũ trụ, sự giãn nở của vũ trụ theo định luật Hubble và tỷ lệ các nguyên tố nhẹ đều ủng hộ thuyết Big Bang.</p>
+        </article>
+      </div>
+    </section>
+    <section class="slide">
+      <p class="kicker">CẤU TRÚC LỚN</p>
+      <h2 class="title" style="font-size: clamp(3rem, 8vw, 8rem);">Cấu trúc vũ trụ</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Hành tinh & vệ tinh</h3>
+          <p>Những thiên thể quay quanh ngôi sao, hình thành từ đám bụi và khí nguyên thủy.</p>
+        </article>
+        <article class="card">
+          <h3>Hệ hành tinh</h3>
+          <p>Một ngôi sao trung tâm cùng các thiên thể bị giữ bởi lực hấp dẫn.</p>
+        </article>
+        <article class="card">
+          <h3>Ngân hà</h3>
+          <p>Tập hợp hàng tỷ ngôi sao, bụi, khí và vật chất tối liên kết với nhau.</p>
+        </article>
+        <article class="card">
+          <h3>Cụm ngân hà</h3>
+          <p>Nhiều ngân hà bị hút lại tạo thành cụm, có quy mô lớn hơn rất nhiều.</p>
+        </article>
+        <article class="card">
+          <h3>Siêu cụm ngân hà</h3>
+          <p>Các cụm ngân hà hợp thành siêu cụm, như Laniakea nơi Ngân Hà Milky Way nằm.</p>
+        </article>
+        <article class="card">
+          <h3>Sợi vũ trụ</h3>
+          <p>Mạng lưới sợi dài kết nối các cấu trúc khắp vũ trụ quan sát được.</p>
+        </article>
+      </div>
+    </section>
+    <section class="slide">
+      <p class="kicker">NHÀ CỦA CHÚNG TA</p>
+      <h2 class="title" style="font-size: clamp(3rem, 8vw, 8rem);">Hệ Mặt Trời</h2>
+      <div class="split">
+        <article class="card">
+          <h3>Thành</h3>
+        </article>
+      </div>
+    </section>
+    <section class="slide">
+      <p class="kicker">QUAN SÁT TRỰC QUAN</p>
+      <h2 class="title" style="font-size: clamp(3rem, 7vw, 7rem);">Hệ Mặt Trời tương tác</h1>
+      <div class="solar">
+        <div class="sun"></div>
+        <div class="orbit mercury">
+          <div class="planet mercury"></div>
+        </div>
+        <div class="orbit venus">
+          <div class="planet venus"></div>
+        </div>
+        <div class="orbit earth">
+          <div class="planet earth"></div>
+        </div>
+        <div class="orbit mars">
+          <div class="planet mars"></div>
+        </div>
+        <div class="orbit jupiter">
+          <div class="planet jupiter"></div>
+        </div>
+        <div class="orbit saturn">
+          <div class="planet saturn"></div>
+        </div>
+        <div class="orbit uranus">
+          <div class="planet uranus"></div>
+        </div>
+        <div class="orbit neptune">
+          <div class="planet neptune"></div>
+        </div>
+      </div>
+    </section>
+    <section class="slide">
+      <p class="kicker">BẠN ĐỒNG HÀNH</p>
+      <h2 class="title" style="font-size: clamp(3rem, 8vw, 8rem);">Vệ tinh tự nhiên</h2>
+      <div class="split">
+        <article class="card">
+          <h3>Trái Đất – Mặt Trăng</h3>
+          <p>Mặt Trăng ổn định trục nghiêng của Trái Đất, gây thủy triều và ảnh hưởng đến lịch sử tiến hóa.</p>
+        </article>
+        <article class="card">
+          <h3>Nhiều thế giới thú vị</h3>
+          <p>Ganymede (Jupiter) là vệ tinh lớn nhất Hệ Mặt Trời, Titan (Saturn) có khí quyển dày, Europa có đại dương ngầm tiềm năng.</p>
+        </article>
+      </div>
+    </section>
+    <section class="slide">
+      <p class="kicker">VỆ TINH NHỎ</p>
+      <h2 class="title" style="font-size: clamp(3rem, 8vw, 8rem);">Tiểu hành tinh, sao chổi</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Vành tiểu hành tinh</h3>
+          <p>Giữa Sao Hỏa và Sao Mộc, chứa hàng triệu mảnh đá kim loại còn lại.</p>
+        </article>
+        <article class="card">
+          <h3>Sao chổi</h3>
+          <p>Băng và bụi từ xa, tạo đuôi sáng khi tiến gần Mặt Trời.</p>
+        </article>
+        <article class="card">
+          <h3>Thiên thạch</h3>
+          <p>Mảnh vụn không gian, khi vào khí quyển tạo thành sao băng.</p>
+        </article>
+        <article class="card">
+          <h3>Hành tinh lùn</h3>
+          <p>Pluto, Ceres, Eris, Haumea, Makemake – đủ hình cầu nhưng chưa dọn sạch quỹ đạo.</p>
+        </article>
+        <article class="card">
+          <h3>Vành Kuiper</h3>
+          <p>Vùng băng giá rộng lớn ngoài quỹ đạo Neptune.</p>
+        </article>
+        <article class="card">
+          <h3>Đám mây Oort</h3>
+          <p>Vỏ cầu bao quanh Hệ Mặt Trời, nguồn gốc sao chổi dài kỳ.</p>
+        </article>
+      </div>
+    </section>
+    <section class="slide">
+      <p class="kicker">NHÀ CHUNG</p>
+      <h2 class="title" style="font-size: clamp(3rem, 8vw, 8rem);">Ngân Hà Milky Way</h2>
+      <div class="split">
+        <article class="card">
+          <h3>Thiên hà xoắn ốc</h3>
+          <p>Đường kính ~100.000 năm ánh sáng, chứa 100–400 tỷ ngôi sao. Hệ Mặt Trời nằm trong nhánh Orion.</p>
+        </article>
+        <article class="card">
+          <h3>Trung tâm bí ẩn</h3>
+          <p>Sagittarius A* là lỗ đen siêu khối lượng nặng khoảng 4 triệu lần Mặt Trời.</p>
+        </article>
+      </div>
+    </section>
+    <section class="slide">
+      <p class="kicker">NHỮNG BÍ ẨN</p>
+      <h2 class="title" style="font-size: clamp(3rem, 8vw, 8rem);">Ngoài Ngân Hà</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Vật chất tối</h3>
+          <p>Chiếm ~85% vật chất vũ trụ, không phát sáng nhưng gây ảnh hưởng trọng lực.</p>
+        </article>
+        <article class="card">
+          <h3>Năng lượng tối</h3>
+          <p>Chiếm ~68% năng lượng vũ trụ, đẩy tốc độ giãn nở ngày càng nhanh.</p>
+        </article>
+        <article class="card">
+          <h3>Lỗ đen siêu khối lượng</h3>
+          <p>Tồn tại ở tâm hầu hết thiên hà lớn, có thể tạo quasar sáng chói.</p>
+        </article>
+        <article class="card">
+          <h3>Sóng hấp dẫn</h3>
+          <p>Gợn không thời gian do va chạm thiên thể cực lớn, được phát hiện trực tiếp từ 2015.</p>
+        </article>
+        <article class="card">
+          <h3>Andromeda</h3>
+          <p>Thiên hà lân cận lớn nhất, sẽ va chạm với Milky Way sau ~4,5 tỷ năm.</p>
+        </article>
+        <article class="card">
+          <h3>Vũ trụ quan sát được</h3>
+          <p>Chỉ là một phần nhỏ so với toàn bộ vũ trụ có thể tồn tại.</p>
+        </article>
+      </div>
+    </section>
+    <section class="slide">
+      <p class="kicker">CHÚNG TA ĐẾN TỪ BỤI SAO</p>
+      <h2 class="title" style="font-size: clamp(3rem, 9vw, 9rem);">Bụi sao đang ngắm nhìn chính mình</h2>
+      <p class="subtitle">Nguyên tử trong cơ thể bạn từng nằm trong lõi một ngôi sao đã tàn. Từ bụi sao, ta sinh ra để hiểu vũ trụ.</p>
+      <p style="margin-top: 4rem; opacity: .6;">Dùng ← → hoặc Space để chuyển trang</p>
+    </section>
+  </div>
+  <nav class="nav">
+    <button id="prev">← Trước</button>
+    <span class="counter" id="counter">1 / 10</span>
+    <button id="next">Sau →</button>
+  </nav>
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const prev = document.getElementById('prev');
+    const next = document.getElementById('next');
+    const counter = document.getElementById('counter');
+    let i = 0;
+    function show(n) {
+      slides[i].classList.remove('active');
+      i = (n + slides.length) % slides.length;
+      slides[i].classList.add('active');
+      counter.textContent = (i + 1) + ' / ' + slides.length;
+    }
+    prev.addEventListener('click', () => show(i - 1));
+    next.addEventListener('click', () => show(i + 1));
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') show(i + 1);
+      if (e.key === 'ArrowLeft') show(i - 1);
+    });
+  </script>
+</body>
+
+</html>
